@@ -405,13 +405,27 @@ func (o *Object) MarshalTo(dst []byte) []byte {
 	return dst
 }
 
-// Get Object as Map with Value
-func (o *Object) Values() map[string]*Value {
-	temp := map[string]*Value{}
-	for _, kv := range o.kvs {
-			temp[kv.k] = o.Get(kv.k)
-	}
-	return temp
+/// Get Object as Map with interface
+func (o *Object) Values() map[string]interface{} {
+    temp := map[string]interface{}{}
+    for _, kv := range o.kvs {
+            v := o.Get(kv.k)
+            switch v.Type(){
+                case TypeNumber:
+                    temp[kv.k] = v.n
+                case TypeTrue:
+                    temp[kv.k] = true
+                case TypeFalse:
+                    temp[kv.k] = false
+                case TypeString:
+                    temp[kv.k] = s2b(v.s)
+                case TypeArray:
+                    temp[kv.k] = v.a
+                case TypeObject:
+                    temp[kv.k] = v.o.Values()
+            }
+    }
+    return temp
 }
 
 // String returns string representation for the o.
