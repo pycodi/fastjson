@@ -405,6 +405,15 @@ func (o *Object) MarshalTo(dst []byte) []byte {
 	return dst
 }
 
+// Get Object as Map with Value
+func (o *Object) Values() map[string]*Value {
+	temp := map[string]*Value{}
+	for _, kv := range o.kvs {
+			temp[kv.k] = o.Get(kv.k)
+	}
+	return temp
+}
+
 // String returns string representation for the o.
 //
 // This function is for debugging purposes only. It isn't optimized for speed.
